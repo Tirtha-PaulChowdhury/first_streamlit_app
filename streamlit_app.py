@@ -1,6 +1,7 @@
 #Library imports
 import streamlit
 import pandas
+import requests
 
 #adding web-app title
 streamlit.title('My Mom\'s New Healthy Diner')
@@ -30,3 +31,13 @@ fruits_to_show = my_fruit_list.loc[fruits_selected]
 
 # Display the table on the page.
 streamlit.dataframe(fruits_to_show)   
+
+
+#checking if fruityvice api is working fine or not
+fruityvice_response = requests.get(https://fruityvice.com/api/fruit/watermelon")
+streamlit.text(fruityvice_response)
+
+
+
+
+
