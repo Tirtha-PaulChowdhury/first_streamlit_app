@@ -3,6 +3,7 @@ import streamlit
 import pandas
 import requests
 import snowflake.connector
+from utllib.error import URLError
 
 #adding web-app title
 streamlit.title('My Mom\'s New Healthy Diner')
@@ -49,6 +50,9 @@ fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
 # Creating a pandas dataframe from the flattened data
 streamlit.dataframe(fruityvice_normalized)
 
+
+#don't run anything past here while we troubleshoot
+streamlit.stop()
 
 #checking the snowflake connector
 my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
