@@ -65,16 +65,8 @@ except URLError as e:
   streamlit.error()
 
 
-#don't run anything past here while we troubleshoot
-# streamlit.stop()
-
-#checking the snowflake connector
-# my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
-# my_cur = my_cnx.cursor()
-# my_cur.execute("SELECT * from fruit_load_list")
-# my_data_rows = my_cur.fetchall()
-
-streamlit.header("The fruit_load_list contains:")
+  
+streamlit.header("View Our Fruit List - Add Your Favourites!")
 
 #function for getting the fruit load list
 def get_fruit_load_list():
@@ -84,18 +76,31 @@ def get_fruit_load_list():
 
   
 #adding a streamlit button
-if streamlit.button('Get Fruit Load List'):
+if streamlit.button('Get Fruit List'):
   my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
   my_data_rows = get_fruit_load_list()
+  my_cnx.close()
   streamlit.dataframe(my_data_rows)
 
 
+  
+  
 #allow the end user to add a fruit to the list
-# add_my_fruit = streamlit.text_input('What fruit would you like to add?', 'jackfruit')
-# streamlit.write('Thanks for adding ', add_my_fruit)
+def insert_row_snowflake(new_fruit):
+  with my_cnx.cursor() as my_cur:
+    my_cur.execute("INSERT INTO FRUIT_LOAD_LIST VALUES ('" + new_fruit + "')")
+    return "Thanks for adding " + new_fruit
+  
+  
+#allow the end user to add a fruit to the list
+add_my_fruit = streamlit.text_input('What fruit would you like to add?')
 
-#this will not work correctly but just go with it for now
-# my_cur.execute("INSERT INTO FRUIT_LOAD_LIST VALUES ('from_streamlit')")
+if streamlit.button('Add a Fruit to the List'):
+  my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+  back_from_function = insert_row_snowflake(add_my_fruit)
+  my_cnx.close()
+  streamlit.text(back_from_function)
+
 
 
 
